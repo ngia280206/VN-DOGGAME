@@ -1,0 +1,145 @@
+{
+  "version": 1,
+  "materials": [
+    {
+      "id": "asphalt",
+      "name": "Asphalt Floor",
+      "repeatMeters": 2.35,
+      "resolution": 1024,
+      "normalConvention": "OpenGL",
+      "colorSpace": {
+        "baseColor": "sRGB",
+        "normal": "linear",
+        "roughness": "linear"
+      },
+      "source": "https://polyhaven.com/a/asphalt_floor",
+      "author": "eye-candy.xyz",
+      "license": "CC0-1.0",
+      "sourceMaps": {
+        "baseColor": {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/asphalt_floor/asphalt_floor_diff_1k.png",
+          "sourceMD5": "84878ba06d7f5ed05ab1bcf035bda149",
+          "bytes": 458968
+        },
+        "normal": {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/asphalt_floor/asphalt_floor_nor_gl_1k.png",
+          "sourceMD5": "cd6f19d53c84da3dde9e789581e21700",
+          "bytes": 730418
+        },
+        "roughness": {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/asphalt_floor/asphalt_floor_rough_1k.png",
+          "sourceMD5": "771a0c9b06a861deb5138b3d97845ee1",
+          "bytes": 164262
+        }
+      },
+      "baseColor": "/environment/asphalt.basecolor.webp",
+      "normal": "/environment/asphalt.normal.webp",
+      "roughness": "/environment/asphalt.roughness.webp"
+    },
+    {
+      "id": "plaster",
+      "name": "Worn Cracked Plaster",
+      "repeatMeters": 1.8,
+      "resolution": 1024,
+      "normalConvention": "OpenGL",
+      "colorSpace": {
+        "baseColor": "sRGB",
+        "normal": "linear",
+        "roughness": "linear"
+      },
+      "source": "https://polyhaven.com/a/worn_cracked_plaster",
+      "author": "Amal Kumar",
+      "license": "CC0-1.0",
+      "sourceMaps": {
+        "baseColor": {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/worn_cracked_plaster/worn_cracked_plaster_diff_1k.png",
+          "sourceMD5": "c65b84ec61779257da41acc9f208c619",
+          "bytes": 315696
+        },
+        "normal": {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/worn_cracked_plaster/worn_cracked_plaster_nor_gl_1k.png",
+          "sourceMD5": "b542c0f9d59efc6c35de2fa56bd8b0e2",
+          "bytes": 429024
+        },
+        "roughness": {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/worn_cracked_plaster/worn_cracked_plaster_rough_1k.png",
+          "sourceMD5": "02e48ff15798758665630bf772c07ffe",
+          "bytes": 115958
+        }
+      },
+      "baseColor": "/environment/plaster.basecolor.webp",
+      "normal": "/environment/plaster.normal.webp",
+      "roughness": "/environment/plaster.roughness.webp"
+    },
+    {
+      "id": "brick",
+      "name": "Worn Brick Wall",
+      "repeatMeters": 2,
+      "resolution": 1024,
+      "normalConvention": "OpenGL",
+      "colorSpace": {
+        "baseColor": "sRGB",
+        "normal": "linear",
+        "roughness": "linear"
+      },
+      "source": "https://polyhaven.com/a/worn_brick_wall",
+      "author": "Amal Kumar",
+      "license": "CC0-1.0",
+      "sourceMaps": {
+        "baseColor": {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/worn_brick_wall/worn_brick_wall_diff_1k.png",
+          "sourceMD5": "6f3f05fa85a102970e3bb1a765eb2fdd",
+          "bytes": 334558
+        },
+        "normal": {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/worn_brick_wall/worn_brick_wall_nor_gl_1k.png",
+          "sourceMD5": "6ccefa5ed8d6f7383a80d62e44c2f2cb",
+          "bytes": 579570
+        },
+        "roughness": {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/worn_brick_wall/worn_brick_wall_rough_1k.png",
+          "sourceMD5": "ccbf104ef42f858707be4c0ce4cdad4c",
+          "bytes": 141856
+        }
+      },
+      "baseColor": "/environment/brick.basecolor.webp",
+      "normal": "/environment/brick.normal.webp",
+      "roughness": "/environment/brick.roughness.webp"
+    },
+    {
+      "id": "metal",
+      "name": "Rusty Corrugated Iron",
+      "repeatMeters": 2,
+      "resolution": 1024,
+      "normalConvention": "OpenGL",
+      "colorSpace": {
+        "baseColor": "sRGB",
+        "normal": "linear",
+        "roughness": "linear"
+      },
+      "source": "https://polyhaven.com/a/rusty_corrugated_iron",
+      "author": "Charlotte Baglioni",
+      "license": "CC0-1.0",
+      "sourceMaps": {
+        "baseColor": {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/rusty_corrugated_iron/rusty_corrugated_iron_diff_1k.png",
+          "sourceMD5": "890739ac28e9b5b843996f47bd91de5a",
+          "bytes": 103738
+        },
+        "normal": {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/rusty_corrugated_iron/rusty_corrugated_iron_nor_gl_1k.png",
+          "sourceMD5": "24e72de5959b7b3aa3c7a4b307cb97e7",
+          "bytes": 131462
+        },
+        "roughness": {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/1k/rusty_corrugated_iron/rusty_corrugated_iron_rough_1k.png",
+          "sourceMD5": "63c4666402f3741ae81c435c194980db",
+          "bytes": 28222
+        }
+      },
+      "baseColor": "/environment/metal.basecolor.webp",
+      "normal": "/environment/metal.normal.webp",
+      "roughness": "/environment/metal.roughness.webp"
+    }
+  ]
+}
