@@ -15,8 +15,8 @@
     "models:prepare": "node scripts/prepare-web-models.mjs"
   },
   "dependencies": {
-    "@google/model-viewer": "4.4.0",
-    "meshoptimizer": "1.3.0"
+    "meshoptimizer": "1.3.0",
+    "three": "0.183.2"
   },
   "devDependencies": {
     "@gltf-transform/core": "4.5.1",

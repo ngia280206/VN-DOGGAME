@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # VN-DOGGAME
 ||||||| (empty tree)
 # 3D-Dog-Battle-Game
@@ -6,32 +7,59 @@
 # 3D-Dog-Battle-Game
 =======
 # Dog Motion Lab
+||||||| parent of bd4b9e9 (Turn the dog viewer into a playable Pawtown social world)
+# Dog Motion Lab
+=======
+# Pawtown — Khu phố đuôi vẫy
+>>>>>>> bd4b9e9 (Turn the dog viewer into a playable Pawtown social world)
 
-A browser model library with 317 animated dogs: 294 breed/body/age variants and
-23 saved custom models. No database, account, photo scanning or API key is needed.
+Một game 3D trên trình duyệt: chọn một trong **10 loại chó**, vào khu phố và trực
+tiếp điều khiển bạn chó đó. Thế giới có quảng trường, đài phun nước, hồ, quán nhỏ,
+cây xanh, chó đi dạo và **8 cư dân NPC** có thể chào hỏi.
 
-Browse by breed and life stage, search Vietnamese names with or without accents,
-switch animation clips, pause playback, orbit/zoom, and remember the selected dog
-in browser storage. A `?dog=MODEL_ID` URL opens a particular companion.
+Bản hiện tại là một thế giới mô phỏng chạy trên máy người chơi. NPC và các bạn chó
+đi dạo do game điều khiển. Game chưa có kết nối nhiều người chơi trực tuyến.
+Không cần database, tài khoản hay API key.
 
-## Run with Docker
+## Chơi
+
+1. Chọn Phú Quốc, H’Mông cộc, Corgi, Shiba, Golden, Husky, Labrador, Pug,
+   Chihuahua hoặc Bắc Hà.
+2. Bấm **Vào khu phố** để điều khiển chính bạn chó vừa chọn.
+3. Làm quen với 3 cư dân và nhặt bánh thưởng trong lúc khám phá.
+
+| Điều khiển | Hành động |
+| --- | --- |
+| WASD / phím mũi tên | Di chuyển theo hướng camera |
+| Shift | Giữ để chạy nhanh, tiêu hao năng lượng |
+| Space | Nhảy |
+| E | Chào cư dân gần nhất |
+| B | Sủa; cư dân gần đó sẽ phản ứng |
+| Kéo chuột | Xoay camera |
+| Cuộn chuột | Zoom camera |
+| Esc | Tạm dừng / tiếp tục |
+
+Trên điện thoại có joystick và các nút chạy, nhảy, sủa, chào hỏi. Trong menu tạm
+dừng có thể đổi sang chó khác. Trò chơi nhớ lựa chọn bằng localStorage nếu trình
+duyệt cho phép. URL `?dog=corgi` mở màn chọn với Corgi được chọn sẵn.
+
+## Docker
 
 ```sh
 docker build -t dog-motion-lab:latest .
 docker run --rm --name dog-motion-lab -p 127.0.0.1:18081:8080 dog-motion-lab:latest
 ```
 
-Open **http://localhost:18081**. The image runs as a non-root user and serves static
-files on port 8080. `GET /healthz` is its health check. To use another host port,
-change the first `18081` in the `-p` argument.
+Mở **http://localhost:18081**. Image chạy bằng user không phải root, cổng trong
+container là 8080, health check là `/healthz`. Nếu container cùng tên đang chạy,
+dừng nó trước bằng `docker stop dog-motion-lab`.
 
-If Docker Compose is installed, `docker compose up --build -d` uses the included
-`compose.yaml` with a read-only container filesystem. On this Mac, start the
-Docker engine first with `colima start` when it is stopped.
+Nếu có Docker Compose, chạy `docker compose up --build -d`. Cấu hình Compose dùng
+filesystem chỉ đọc. Trên Mac dùng Colima, chạy `colima start` nếu Docker chưa bật.
 
-## Run without Docker
+## Chạy trực tiếp
 
-Use Node.js 24 LTS (Node.js 22.12+ is supported):
+Node.js 24 LTS hoặc Node.js 22.12+:
 
 ```sh
 npm ci
@@ -40,35 +68,48 @@ npm run build
 npm start
 ```
 
-Open **http://localhost:18080**. After editing `web/`, rebuild and refresh the page.
-`PORT` changes the standalone server's listening port.
+Mở **http://localhost:18080**. Sau khi sửa `web/`, build lại rồi tải lại trang.
+Biến `PORT` đổi cổng cho server chạy trực tiếp.
 
-## Deploy from GitHub to Vercel
+## Vercel
 
-1. Import this GitHub repository as a new Vercel project.
-2. Use the repository root as the Root Directory and **Other** as the framework.
-3. Set the Build Command to `npm run build` and Output Directory to `dist`.
-4. Deploy. No database, environment variables or API keys are required.
+Import repository GitHub, dùng Root Directory mặc định và framework **Other**:
 
-`vercel.json` supplies the build/output configuration and model-cache headers.
-Vercel builds the static website directly from the repository; the Dockerfile
-provides the equivalent local/self-hosted package. Importing the Git repository
-avoids uploading this large model library through the CLI. See the official
-[Vercel Git deployment guide](https://vercel.com/docs/git).
+- Build Command: `npm run build`
+- Output Directory: `dist`
 
-## Models and repository size
+`vercel.json` cung cấp cấu hình build và cache. Vercel phục vụ game tĩnh từ `dist/`;
+Docker đóng gói cùng game đó để chạy local hoặc tự host. Không cần biến môi trường.
 
-`public/catalog.json` and `public/models/` contain all 317 web-ready models.
-Meshopt compression, animation-track optimization and 1024px WebP textures reduce
-7.91 GB of original exports to about 1.09 GB. Models load only when selected;
-the viewer and decoder are served locally rather than from a third-party CDN.
+## Cấu trúc
 
-Original `assets/*.glb`, cached ear models and `Textures/` remain on the authoring
-machine and are excluded from Git and Docker. They are not needed to build or run
-the web version. They have not been overwritten or deleted. The web exports use
-smaller textures and quantized geometry; they are not byte-identical originals.
+- `web/roster.mjs`: 10 nhân vật chơi được, mô tả và thông số gameplay.
+- `web/main.mjs`: màn chọn chó, HUD, joystick, bản đồ và hội thoại.
+- `web/game/engine.mjs`: vòng lặp game, camera, input và hoạt ảnh chó.
+- `web/game/physics.mjs`: chuyển động, va chạm, năng lượng và khoảng cách tương tác.
+- `web/game/world.mjs`: môi trường 3D tạo bằng hình học, không tải cảnh từ dịch vụ ngoài.
+- `web/game/residents.mjs`: cư dân, đường đi, cử chỉ và lời chào NPC.
+- `web/game/assets.mjs`: tải/clone chó có skeleton và quản lý cache tài nguyên.
+- `public/`: chỉ 10 model dành cho game, metadata và thông báo nguồn tài sản.
+- `scripts/`: build, kiểm tra, tạo model web và các test Node.
+- `server.mjs`, `Dockerfile`, `compose.yaml`, `vercel.json`: chạy và triển khai.
 
-To regenerate web copies on a machine with the original assets:
+## Model và dữ liệu cũ
+
+10 model web sử dụng Meshopt, hoạt ảnh đã tối ưu và texture WebP 1024px; tổng
+khoảng **34 MB**, cả bản build khoảng **35 MB**. Game tải chó đang chọn và hai
+chó đi dạo, thay vì tải cả bộ sưu tập. Three.js và decoder đều được phục vụ từ
+chính ứng dụng.
+
+Bộ 294 model gốc và 23 model tùy chỉnh của ứng dụng desktop vẫn giữ trên máy
+trong `assets/`; `Textures/` giữ đầu vào authoring. Những đầu vào này không nằm
+trong Git và không cần để build/chạy game. Các bản web không dùng được chuyển
+sang `artifacts/web-model-archive/` cục bộ và không đưa vào bản triển khai.
+
+Ứng dụng Panda3D và các công cụ authoring Python cũ được giữ lại. Chúng cần bộ
+model gốc để chạy; một checkout Git mới chỉ có 10 model dùng cho game web.
+
+Để tạo lại model web trên máy có đầu vào gốc:
 
 ```sh
 npm run models:prepare
@@ -76,25 +117,9 @@ node scripts/check-web-models.mjs
 npm run build
 ```
 
-Asset source notices and restrictions are retained under `public/licenses/`.
-These models are included for this application; source-model redistribution
-restrictions still apply.
+Thông báo nguồn và điều kiện sử dụng model được giữ trong `public/licenses/`.
 
-## Layout
-
-- `web/`: browser interface, filters, selection and playback controls.
-- `public/`: portable catalog, compressed animated models and source notices.
-- `scripts/`: static build, web-model export/validation and Node tests.
-- `server.mjs`: dependency-free static server used by Docker and `npm start`.
-- `Dockerfile`, `compose.yaml`, `vercel.json`: deployment configuration.
-- `dog_library.py`, `play_park.py`: retained Panda3D desktop applications.
-- `dog_*.py`, `tools/`, `tests/`: retained model authoring and Python regressions.
-
-The Python desktop apps and geometry tests require the original local `assets/`
-and `Textures/` inputs. A fresh Git checkout includes the browser-ready exports;
-it does not include those original authoring inputs.
-
-## Validation
+## Kiểm tra
 
 ```sh
 npm test
@@ -102,11 +127,11 @@ npm run build
 node scripts/check-web-models.mjs
 ```
 
-The compressed-model checker decodes the entire library using the browser
-viewer's decoder and checks all 80-joint rigs, locomotion clips and mesh arrays.
-The server tests exercise HTTP methods, partial downloads and path containment.
+Các test Node kiểm tra roster 10 chó, chuyển động theo camera, tính độc lập tốc độ
+khung hình, va chạm, năng lượng, khoảng cách NPC và server HTTP. Bộ kiểm tra model
+giải nén cả 10 file và xác nhận skeleton 80 khớp, các clip di chuyển và dữ liệu mesh.
 
-On the original authoring machine, Python regressions remain available:
+Trên máy authoring vẫn có thể chạy test Python cho dữ liệu gốc:
 
 ```sh
 .venv/bin/python -B -m unittest discover -s tests -v

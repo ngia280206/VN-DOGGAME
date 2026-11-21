@@ -1,58 +1,66 @@
-# Architecture
+# Pawtown architecture
 
-## Browser application
+## Playable world
 
-`web/` is a static model viewer built around the self-hosted `<model-viewer>`
-component. `catalog.mjs` contains filtering and selection logic, independent of
-rendering. `main.mjs` connects that state to the UI, model loading and animation
-controls. The last selected dog is optional browser-local state.
+The browser boots a real Three.js scene covering the viewport. A ten-character
+selection overlay previews the selected dog in the village. Starting play hands
+control to that same animated dog. The interface becomes an in-game HUD rather
+than a model catalog.
 
-`public/catalog.json` describes the 317 available dogs using relative asset URLs.
-The browser fetches the selected compressed GLB on demand. Its cache retains at
-most two models; it does not preload the whole library. No database or backend
-application service is used.
+`web/game/engine.mjs` owns the renderer, fixed scene lifetime, player state,
+keyboard/pointer input, follow camera and animation blending. It coordinates the
+static world, resident simulation and model cache through separate modules.
+`choose`, `playing` and `paused` modes explicitly control movement, simulation and
+UI. Pausing freezes residents, animation and simulation time. Blur and background
+tabs pause active play to prevent stuck movement keys.
 
-## Build and delivery
+## Movement and interaction
 
-`npm run build` validates every asset reference, copies `web/` and `public/` to
-`dist/`, and adds the locked model-viewer bundle and local Meshopt decoder.
-Deployments never run Blender or need the original 8 GB of models.
+`physics.mjs` provides camera-relative normalized input, analytic acceleration,
+shortest-angle steering and collision substeps with sliding. It also handles
+bounded sprint energy and nearest-resident targeting. Jumping uses a vertical
+velocity with gravity. Body/age source geometry does not change at runtime.
 
-Vercel serves the static `dist/` output from the GitHub source. The Docker image
-builds that same output in a Node builder stage, then serves it using a small,
-non-root Node runtime. `server.mjs` supports HEAD and byte ranges, rejects writes,
-and prevents traversal or symlink access outside `dist/`. Compose additionally
-runs the container with a read-only filesystem.
+Eight procedural human NPCs follow authored paths with idle pauses, walking limbs
+and name labels. Greeting a nearby NPC turns them toward the player and triggers
+a wave and dialogue. Unique greetings advance a three-friend objective. Barking
+gets a nearby resident's attention. Floating treats can be collected by walking
+into them. These are local NPC interactions, not simulated online player activity.
 
-Model URLs include a fingerprint of the original file and export settings. They
-can be cached as immutable; the catalog is revalidated. Source license notices
-are included in the website and image.
+The prototype is single-player and database-free. Real multiplayer would need a
+separate session/network service; no fake online users or network chat are shown.
 
-## Original assets and authoring
+## World and rendering
 
-`dog_catalog.json` describes 294 base variants and `custom_catalog.json` describes
-23 standalone custom models. `scripts/prepare-web-models.mjs` reads these original
-local GLBs, optimizes repeated accessors/animation tracks, compresses the geometry
-and animation data with Meshopt, and creates smaller WebP textures. It writes new
-files under `public/models/`; it never modifies the originals.
+`world.mjs` authors a village with houses, shops, footpaths, a fountain, lake,
+benches, planters, trees, clouds and a play lawn. Instanced foliage limits draw
+calls. A directional shadow map follows the player; contact shadows anchor NPCs.
+The HUD minimap uses the same landmarks, resident positions and player heading.
 
-The full source files under `assets/` and `Textures/` stay local and are excluded
-from Git and the Docker build context. The prebuilt web copies are tracked so a
-fresh checkout can build without proprietary authoring inputs or Blender.
+## Assets
 
-The retained Python desktop entry points use `catalog.py` to access base and
-saved exports. This module imports only the standard library. `model_assets.py`
-provides cached GLB metadata and offline binary access without SciPy or Pillow.
-`tools/` holds explicit asset-authoring and validation commands; it never runs
-from a browser request or the desktop render loop.
+`roster.mjs` is the source of truth for the ten playable IDs. The deployed catalog
+and model validator enforce that exact roster. Only those ten compressed GLBs
+are included in `public/` and `dist/` (about 34 MB of models).
 
-## Verification
+`assets.mjs` loads Meshopt GLBs, clones skin hierarchies with SkeletonUtils,
+normalizes their physical scale, and creates an AnimationMixer per dog. References
+protect geometry/materials shared by clones. Idle cache entries are evicted once
+more than three model entries are retained; current and ambient dogs stay alive.
+Selection generation tokens prevent a slower previous load replacing the latest
+choice. A failed model load keeps the start button disabled.
 
-Node tests cover filtering, remembered/shared selection, static HTTP delivery,
-byte ranges and filesystem containment. `scripts/check-web-models.mjs` decodes
-all compressed files with the same Meshopt decoder used by the viewer, checks
-80-joint skins and locomotion clips, and verifies finite geometry arrays.
+Original desktop/authoring assets remain local. Unused generated web copies are
+archived under ignored `artifacts/`. They are absent from production builds.
 
-Python tests retain geometry, groom, developmental proportion and movement
-coverage on the original authoring machine. Large review artifacts remain
-ignored. Scanning, recognition, fitting and API calls have been removed.
+## Delivery and verification
+
+The build validates all model references and copies HTML/CSS/ES modules, the ten
+GLBs, the pinned Three.js runtime/addons, and the local Meshopt decoder. There is
+no CDN dependency, database, runtime authoring or API key. Vercel serves the static
+output; Docker runs the same output with a dependency-free non-root Node server.
+
+Node tests cover movement, collision, energy, interaction distance, character
+selection and HTTP behavior. Model checks decode every playable file, verify
+80-joint skins and locomotion clips, and reject non-finite mesh data. Browser QA
+exercises selection, actual player movement, jumping, pause and mobile controls.
