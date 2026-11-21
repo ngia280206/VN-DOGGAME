@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#43694d">
-  <meta name="description" content="Chọn một bạn chó, chạy chơi và làm quen với cư dân trong khu phố Pawtown.">
-  <title>Pawtown — Khu phố đuôi vẫy</title>
+  <meta name="theme-color" content="#121b25">
+  <meta name="description" content="Sống sót trong đêm: tìm thức ăn, tránh người gác và đưa bạn chó trở về nơi trú.">
+  <title>Pawtown — Sau nửa đêm</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/style.css">
   <script type="importmap">{"imports":{"three":"/vendor/three.module.js","three/addons/":"/vendor/addons/"}}</script>
@@ -16,16 +16,16 @@
   <div class="vignette" aria-hidden="true"></div>
 
   <section id="choose-title" class="choose-title" aria-label="Pawtown">
-    <div class="overline"><span class="sun-dot"></span> MỘT NGÀY ĐẸP TRỜI Ở</div>
+    <div class="overline"><span class="sun-dot"></span> SAU KHI NHỮNG CỬA TIỆM ĐÃ ĐÓNG</div>
     <h1>pawtown<span class="paw-logo">✦</span></h1>
-    <p>Một khu phố nhỏ.<br>Cả một thế giới để đánh hơi.</p>
-    <span class="world-note">Khu phố tự do · Cư dân NPC</span>
+    <p>Không phải ai cũng muốn bạn ở đây.<br>Tìm thức ăn. Giữ khoảng cách. Trở về nơi trú.</p>
+    <span class="world-note">Mưa đêm · Tuần tra NPC · Sinh tồn</span>
   </section>
 
   <section id="picker" class="picker" aria-labelledby="picker-heading">
     <div class="picker-top">
-      <div><p class="eyebrow">CUỘC PHIÊU LƯU CỦA BẠN BẮT ĐẦU TỪ ĐÂY</p><h2 id="picker-heading">Hôm nay, bạn là ai?</h2></div>
-      <span class="roster-count">10 NGƯỜI BẠN BỐN CHÂN</span>
+      <div><p class="eyebrow">MỘT CƠ HỘI ĐỂ VƯỢT QUA ĐÊM NÀY</p><h2 id="picker-heading">Ai sẽ đi qua đêm nay?</h2></div>
+      <span class="roster-count">10 NHÂN VẬT · MỘT ĐÊM DÀI</span>
     </div>
     <div id="roster" class="roster" aria-label="Chọn một trong 10 loại chó"></div>
     <div class="picker-bottom">
@@ -36,27 +36,30 @@
   </section>
 
   <div id="hud" class="hud" hidden>
-    <div class="player-card"><div id="player-portrait" class="player-portrait"></div><div><span class="tiny-label">BẠN ĐANG LÀ</span><strong id="player-name">Phú Quốc</strong><span class="player-level">Cư dân mới của Pawtown</span></div></div>
-    <div class="location"><span class="location-icon">⌂</span><div><span class="tiny-label">PAWTOWN</span><strong>Quảng trường bên hồ</strong></div><span class="weather">☀</span></div>
+    <div class="player-card"><div id="player-portrait" class="player-portrait"></div><div><span class="tiny-label">BẠN ĐANG LÀ</span><strong id="player-name">Phú Quốc</strong><span class="player-level">Một mình trong đêm</span></div></div>
+    <div id="health-status" class="health-status" role="img" aria-label="Thể lực 3 trên 3"><span>THỂ LỰC</span><i></i><i></i><i></i></div>
+    <div id="danger-indicator" class="danger-indicator" role="status"><span id="danger-label">DƯỚI MÁI HIÊN</span><div><i id="awareness-fill"></i></div></div>
+    <div class="location"><span class="location-icon">⌂</span><div><span class="tiny-label">PAWTOWN</span><strong>Thị trấn sau nửa đêm</strong></div><span class="weather">☾</span></div>
     <button id="pause" class="pause-button" aria-label="Tạm dừng game">Ⅱ</button>
-    <div class="quest"><span class="quest-star">✦</span><div><span class="tiny-label">MỘT CHIẾC ĐUÔI, NHIỀU NGƯỜI BẠN</span><strong id="quest-title">Làm quen với 3 cư dân</strong><p>Đến gần một người bạn và nhấn <kbd>E</kbd></p></div><span id="quest-count">0/3</span></div>
+    <div class="quest"><span class="quest-star">✦</span><div><span class="tiny-label">MANG THỨC ĂN VỀ NƠI TRÚ</span><strong id="quest-title">Tìm 3 phần thức ăn</strong><p id="quest-hint">Tránh người gác. Trở về vùng đèn xanh.</p></div><span id="quest-count">0/3</span></div>
     <div class="map-panel"><canvas id="minimap" width="260" height="260" aria-label="Bản đồ khu phố"></canvas><span>BẢN ĐỒ KHU PHỐ</span></div>
-    <div class="treat-counter"><span aria-hidden="true">✦</span><strong id="treat-count">0</strong><span>bánh thưởng</span></div>
+    <div class="treat-counter"><span aria-hidden="true">✦</span><strong id="treat-count">0</strong><span>thức ăn</span></div>
     <div class="stamina"><span>NĂNG LƯỢNG</span><div id="stamina-track" role="progressbar" aria-label="Năng lượng chạy" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i id="stamina-fill"></i></div><small><kbd>Shift</kbd> Giữ để chạy</small></div>
     <div class="keyboard-hints"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Di chuyển</span><span>Kéo chuột để nhìn quanh</span><span><kbd>Esc</kbd> Tạm dừng</span></div>
-    <div class="action-bar"><button id="interact" disabled><kbd>E</kbd><span id="interact-label">Chào hỏi</span></button><button id="bark"><kbd>B</kbd><span>Gâu gâu!</span></button><button id="jump"><kbd>Space</kbd><span>Nhảy</span></button></div>
+    <div class="action-bar"><button id="interact" disabled><kbd>E</kbd><span id="interact-label">Tương tác</span></button><button id="bark"><kbd>B</kbd><span>Sủa</span></button><button id="jump"><kbd>Space</kbd><span>Nhảy</span></button></div>
     <div id="joystick" class="joystick" aria-label="Cần điều khiển di chuyển"><div id="stick-knob"></div></div>
     <button id="touch-sprint" class="touch-sprint" aria-label="Giữ để chạy nhanh">Chạy</button>
     <div id="near-prompt" class="near-prompt" hidden><kbd>E</kbd><span id="near-label"></span></div>
-    <div id="dialogue" class="dialogue" role="status" hidden><span class="dialogue-avatar">☺</span><div><strong id="speaker"></strong><p id="speech"></p></div></div>
+    <div id="dialogue" class="dialogue" role="status" hidden><span class="dialogue-avatar">···</span><div><strong id="speaker"></strong><p id="speech"></p></div></div>
   </div>
 
   <section id="pause-screen" class="pause-screen" role="dialog" aria-modal="true" aria-labelledby="pause-title" hidden>
-    <div class="pause-card"><span class="pause-paw">🐾</span><p class="eyebrow">KHU PHỐ VẪN ĐỢI BẠN</p><h2 id="pause-title">Nghỉ một chút nhé?</h2><p>Một cuộc dạo chơi thì không cần vội.</p><button id="resume" class="start-button">Tiếp tục khám phá <span>↗</span></button><button id="change-dog" class="secondary-button">Chọn một bạn chó khác</button><div class="pause-controls"><span><kbd>WASD</kbd> Di chuyển</span><span><kbd>Shift</kbd> Chạy</span><span><kbd>Space</kbd> Nhảy</span><span><kbd>E</kbd> Chào hỏi</span><span><kbd>B</kbd> Sủa</span><span>Kéo chuột để xoay camera</span></div></div>
+    <div class="pause-card"><span class="pause-paw">◈</span><p class="eyebrow">DỪNG LẠI. NGHE TIẾNG CHÂN.</p><h2 id="pause-title">Ẩn trong bóng tối</h2><p id="pause-description">Quan sát hướng tuần tra trước khi bước tiếp.</p><button id="resume" class="start-button">Tiếp tục <span>↗</span></button><button id="change-dog" class="secondary-button">Chọn một bạn chó khác</button><div class="pause-controls"><span><kbd>WASD</kbd> Di chuyển</span><span><kbd>Shift</kbd> Chạy</span><span><kbd>Space</kbd> Nhảy</span><span><kbd>E</kbd> Nghỉ / nói chuyện</span><span><kbd>B</kbd> Sủa</span><span>Kéo chuột để xoay camera</span></div></div>
   </section>
+  <div id="hit-overlay" class="hit-overlay" aria-hidden="true"></div>
   <div id="toast" class="toast" role="status" hidden></div>
   <section id="fatal" class="fatal" role="alert" hidden><h2>Khu phố chưa sẵn sàng</h2><p id="fatal-message"></p><button onclick="location.reload()">Thử lại</button></section>
-  <a class="credits" href="/licenses/index.html" target="_blank" rel="noopener">Pawtown · Credits</a>
+  <a class="credits" href="/licenses/index.html" target="_blank" rel="noopener">Pawtown / Nightfall · Credits</a>
   <noscript>Bật JavaScript để vào thế giới Pawtown.</noscript>
 </body>
 </html>

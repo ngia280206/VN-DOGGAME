@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { clone } from 'three/addons/utils/SkeletonUtils.js';
 import { MeshoptDecoder } from '/vendor/meshopt_decoder.mjs';
+import { DogAnimation, GAITS } from './animation.mjs';
 
 export class DogAssets {
   constructor() {
@@ -28,7 +29,13 @@ export class DogAssets {
     const root = new THREE.Group();
     root.add(scene);
     const mixer = new THREE.AnimationMixer(scene);
-    const actions = new Map(data.animations.map(clip => [clip.name, mixer.clipAction(clip)]));
+    const supported = new Set([...GAITS, 'Bark', 'Lie_Idle']);
+    const actions = new Map(data.animations.filter(clip => supported.has(clip.name)).map(clip => [clip.name, mixer.clipAction(clip)]));
+    for (const [name, action] of actions) {
+      if (!['Idle', 'Walk', 'Trot', 'Gallop'].includes(name)) {
+        action.setLoop(THREE.LoopOnce, 1); action.clampWhenFinished = true;
+      }
+    }
     actions.get('Idle')?.play();
     mixer.update(0);
     scene.updateMatrixWorld(true);
@@ -46,23 +53,13 @@ export class DogAssets {
         node.frustumCulled = false;
       }
     });
-    let current = 'Idle';
+    const animation = new DogAnimation(mixer, actions, worldHeight);
     let released = false;
     return {
-      root, mixer, actions, height: worldHeight,
-      play(name, once = false) {
-        if (name === current || !actions.has(name)) return;
-        const next = actions.get(name);
-        const previous = actions.get(current);
-        next.reset().setLoop(once ? THREE.LoopOnce : THREE.LoopRepeat, once ? 1 : Infinity);
-        next.clampWhenFinished = once;
-        next.enabled = true;
-        next.setEffectiveWeight(1).setEffectiveTimeScale(1).play();
-        previous?.fadeOut(0.2);
-        next.fadeIn(0.2);
-        current = name;
-      },
-      clip() { return current; },
+      root, mixer, actions, animation, height: worldHeight,
+      play(name) { animation.play(name); },
+      animate(dt, speed) { animation.update(dt, speed); },
+      clip() { return animation.clip(); },
       release: () => {
         if (released) return;
         released = true;

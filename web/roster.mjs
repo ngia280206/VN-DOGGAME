@@ -1,15 +1,15 @@
 // These are game tuning values and personalities, rather than breed standards.
 export const ROSTER = [
-  { id: 'phu_quoc', name: 'Phú Quốc', tag: 'Nhà thám hiểm', description: 'Chiếc mũi tò mò, luôn sẵn sàng cho một con đường mới.', color: '#bb8556', ears: 'up', speed: 4.4, stamina: 1.05 },
-  { id: 'hmong_bobtail', name: 'H’Mông cộc', tag: 'Người bạn điềm tĩnh', description: 'Một chiếc đuôi nhỏ và một trái tim thật lớn.', color: '#57514c', ears: 'up', speed: 3.9, stamina: 1.2 },
-  { id: 'corgi', name: 'Corgi', tag: 'Chân ngắn, vui dài', description: 'Lạch bạch khắp phố, không bỏ lỡ một cuộc vui nào.', color: '#c58c55', ears: 'up', speed: 3.5, stamina: 1.05 },
-  { id: 'shiba', name: 'Shiba Inu', tag: 'Ngôi sao khu phố', description: 'Một nụ cười tinh nghịch cho mỗi người bạn mới.', color: '#ce8d4d', ears: 'up', speed: 4.1, stamina: 1.05 },
-  { id: 'golden_retriever', name: 'Golden', tag: 'Ấm áp như nắng', description: 'Chỗ nào có bạn bè, chỗ đó có một chiếc đuôi đang vẫy.', color: '#d7b269', ears: 'down', speed: 4.0, stamina: 1.15 },
-  { id: 'husky', name: 'Husky', tag: 'Cục năng lượng', description: 'Cả khu phố rộng lớn đang chờ một cuộc chạy vòng quanh.', color: '#8a949a', ears: 'up', speed: 4.6, stamina: 1.2 },
-  { id: 'labrador', name: 'Labrador', tag: 'Bạn của mọi nhà', description: 'Bắt đầu một ngày bằng một cái chào và một vòng dạo chơi.', color: '#c7a46d', ears: 'down', speed: 4.0, stamina: 1.2 },
-  { id: 'pug', name: 'Pug', tag: 'Bậc thầy thư giãn', description: 'Chạy một chút, nghỉ một chút, tận hưởng cả ngày.', color: '#bba283', ears: 'down', speed: 3.2, stamina: 0.95 },
-  { id: 'chihuahua', name: 'Chihuahua', tag: 'Nhỏ mà có võ', description: 'Bước chân bé xíu, cuộc phiêu lưu thì không hề nhỏ.', color: '#a36b4a', ears: 'up', speed: 3.4, stamina: 0.95 },
-  { id: 'bac_ha', name: 'Bắc Hà', tag: 'Đám mây bốn chân', description: 'Mang một chút ấm áp từ vùng cao đến quảng trường.', color: '#b3a094', ears: 'up', speed: 3.8, stamina: 1.15 },
+  { id: 'phu_quoc', name: 'Phú Quốc', tag: 'Nhanh chân', description: 'Chạy qua khoảng trống, né vòng đỏ và giữ một đường lui về mái hiên.', color: '#bb8556', ears: 'up', speed: 4.4, stamina: 1.05 },
+  { id: 'hmong_bobtail', name: 'H’Mông cộc', tag: 'Bền bỉ', description: 'Giữ nhịp đi bộ khi còn kín đáo. Dành sức cho lúc bị phát hiện.', color: '#57514c', ears: 'up', speed: 3.9, stamina: 1.2 },
+  { id: 'corgi', name: 'Corgi', tag: 'Không bỏ cuộc', description: 'Bước chân ngắn giữa một thị trấn quá rộng. Ánh đèn là nơi để quay về.', color: '#c58c55', ears: 'up', speed: 3.5, stamina: 1.05 },
+  { id: 'shiba', name: 'Shiba Inu', tag: 'Lặng lẽ', description: 'Đợi người gác quay lưng rồi băng qua. Không phải mọi tiếng động đều đáng đuổi theo.', color: '#ce8d4d', ears: 'up', speed: 4.1, stamina: 1.05 },
+  { id: 'golden_retriever', name: 'Golden', tag: 'Giữ sức', description: 'Tìm người còn sẵn lòng giúp đỡ, nhưng đừng dừng lại giữa đường tuần tra.', color: '#d7b269', ears: 'down', speed: 4.0, stamina: 1.15 },
+  { id: 'husky', name: 'Husky', tag: 'Chạy đường dài', description: 'Khi khoảng cách là tất cả, hãy biết lúc nào cần bứt tốc.', color: '#8a949a', ears: 'up', speed: 4.6, stamina: 1.2 },
+  { id: 'labrador', name: 'Labrador', tag: 'Kiên trì', description: 'Một chuyến đi kiếm ăn, một lối về an toàn. Chỉ cần qua được đêm nay.', color: '#c7a46d', ears: 'down', speed: 4.0, stamina: 1.2 },
+  { id: 'pug', name: 'Pug', tag: 'Chọn đường kỹ', description: 'Đừng tiêu hết năng lượng ở đầu đường. Nghỉ dưới vùng đèn xanh khi cần.', color: '#bba283', ears: 'down', speed: 3.2, stamina: 0.95 },
+  { id: 'chihuahua', name: 'Chihuahua', tag: 'Cảnh giác', description: 'Nhìn động tác giơ tay, đổi hướng sớm và đừng để bị dồn vào góc.', color: '#a36b4a', ears: 'up', speed: 3.4, stamina: 0.95 },
+  { id: 'bac_ha', name: 'Bắc Hà', tag: 'Vượt mưa', description: 'Mưa che tiếng chân, nhưng tiếng sủa vẫn có thể đánh thức người gác.', color: '#b3a094', ears: 'up', speed: 3.8, stamina: 1.15 },
 ];
 export const PLAYABLE_IDS = ROSTER.map(dog => dog.id);
 export const DEFAULT_DOG = 'phu_quoc';

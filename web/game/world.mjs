@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { REFUGES } from './threats.mjs';
+import { pavementTexture } from './weather.mjs';
 
 export function textSprite(text, { color = '#ffffff', background = '#294535', size = 0.8 } = {}) {
   const canvas = document.createElement('canvas');
@@ -22,8 +24,23 @@ export function createWorld(scene) {
   const group = new THREE.Group();
   scene.add(group);
   const materials = new Map();
+  const grime = pavementTexture();
+  const overrides = {
+    '#86a86a': '#303b39', '#e0ceb0': '#4b5359', '#ebddbf': '#535c60', '#d3bb98': '#424a50',
+    '#cbb798': '#565e61', '#c7c5ae': '#596269', '#e5dfc5': '#657078', '#c4c5af': '#4d5a65',
+    '#e9e3ca': '#606d78', '#e5e2ce': '#75828b', '#b5edf0': '#546a78', '#d8c7a0': '#3c464b',
+    '#759d69': '#35413d', '#f6f1de': '#293540', '#dca16a': '#76685b',
+  };
   const material = color => {
-    if (!materials.has(color)) materials.set(color, new THREE.MeshStandardMaterial({ color, roughness: 0.88 }));
+    if (!materials.has(color)) {
+      const base = overrides[color] ? new THREE.Color(overrides[color])
+        : new THREE.Color(color).lerp(new THREE.Color('#303d49'), 0.58);
+      const surface = new THREE.MeshStandardMaterial({ color: base, roughness: 0.9 });
+      if (['#e0ceb0', '#ebddbf'].includes(color)) { surface.map = grime; surface.roughness = 0.53; }
+      if (color === '#f0d69a') { surface.emissive.set('#c38343'); surface.emissiveIntensity = 1.35; }
+      if (color === '#9dc5c0') { surface.color.set('#5c676b'); surface.emissive.set('#b08a58'); surface.emissiveIntensity = 0.22; }
+      materials.set(color, surface);
+    }
     return materials.get(color);
   };
   function mesh(geometry, color, x, y, z, parent = group) {
@@ -42,7 +59,7 @@ export function createWorld(scene) {
   function circleCollider(x, z, radius) { colliders.push({ type: 'circle', x, z, radius }); }
   function rectangle(x, z, width, depth) { colliders.push({ type: 'box', x, z, width, depth }); }
 
-  // Broad lawns, warm pedestrian paths and a plaza at the heart of the village.
+  // An abandoned, damp square. Keep traversal readable under the moonlight.
   box(250, 0.4, 250, '#86a86a', 0, -0.25, 0);
   box(12, 0.04, 95, '#e0ceb0', 0, -0.018, 0);
   box(95, 0.045, 8, '#e0ceb0', 0, -0.012, 0);
@@ -56,16 +73,16 @@ export function createWorld(scene) {
   const fountainX = 0, fountainZ = -4;
   cylinder(3.4, 3.55, 0.3, '#c7c5ae', fountainX, 0.15, fountainZ, 48);
   cylinder(3.12, 3.25, 0.35, '#e5dfc5', fountainX, 0.44, fountainZ, 48);
-  const waterMaterial = new THREE.MeshStandardMaterial({ color: '#63bfc4', roughness: 0.3, metalness: 0.12, transparent: true, opacity: 0.88 });
+  const waterMaterial = new THREE.MeshStandardMaterial({ color: '#243d4b', roughness: 0.24, metalness: 0.3, transparent: true, opacity: 0.88 });
   const water = disc(2.9, waterMaterial, fountainX, 0.63, fountainZ);
   cylinder(0.5, 0.7, 1.25, '#c4c5af', 0, 1.05, -4);
   cylinder(1.4, 0.5, 0.25, '#e9e3ca', 0, 1.72, -4, 32);
   const topWater = disc(1.18, waterMaterial, 0, 1.86, -4);
   cylinder(0.13, 0.17, 0.7, '#e5e2ce', 0, 2.1, -4);
-  for (let index = 0; index < 6; index++) {
+  for (let index = 0; index < 2; index++) {
     const angle = index * Math.PI / 3;
     const points = [new THREE.Vector3(0, 2.4, -4),
-      new THREE.Vector3(Math.sin(angle) * 0.7, 2.8, -4 + Math.cos(angle) * 0.7),
+      new THREE.Vector3(Math.sin(angle) * 0.7, 2.45, -4 + Math.cos(angle) * 0.7),
       new THREE.Vector3(Math.sin(angle) * 2.2, 0.67, -4 + Math.cos(angle) * 2.2)];
     mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points), 16, 0.035, 5, false), '#b5edf0', 0, 0, 0);
   }
@@ -99,7 +116,7 @@ export function createWorld(scene) {
       }
     }
     if (label) {
-      const sign = textSprite(label, { background: roofColor, size: 0.74 });
+      const sign = textSprite(label, { background: '#202b34', color: '#8e9c9f', size: 0.74 });
       sign.position.set(0, height - 0.65, 3.45); home.add(sign);
       for (let stripe = 0; stripe < 7; stripe++) {
         const awning = box(width / 7, 0.13, 1.4, stripe % 2 ? '#f3e7cd' : roofColor,
@@ -112,9 +129,9 @@ export function createWorld(scene) {
     buildingFootprints.push({ x, z, width: turns ? 6.7 : width, depth: turns ? width : 6.7 });
     return home;
   }
-  house(-21, -22, '#ecd3ae', '#bb7052', 'TIỆM BÁNH', 0, 7.7, 5.5);
+  house(-21, -22, '#ecd3ae', '#bb7052', 'ĐÃ ĐÓNG CỬA', 0, 7.7, 5.5);
   house(-10.8, -23, '#e0c3b5', '#6f9391', '', 0, 7, 5.8);
-  house(10.5, -23, '#f0dfbc', '#c28b59', 'CÀ PHÊ LÁ', 0, 7.8, 5.2);
+  house(10.5, -23, '#f0dfbc', '#c28b59', 'QUÁN CŨ', 0, 7.8, 5.2);
   house(21, -22, '#bbcbc4', '#a16e5b', '', 0, 7, 6);
   house(23, -9, '#ddc6af', '#789b8c', 'GÓC NHỎ', -Math.PI / 2, 7.3, 4.5);
   house(23, 8, '#e6bca7', '#be8258', '', -Math.PI / 2, 7.2, 5.1);
@@ -134,10 +151,13 @@ export function createWorld(scene) {
   bench(-6.7, -4, Math.PI / 2); bench(6.7, -4, -Math.PI / 2);
   bench(-12.5, 8, Math.PI / 2); bench(12, 13, Math.PI);
 
-  for (const [x, z] of [[-8, 8], [8, 8], [-8, -13], [8, -13], [-14, 0], [15, 0]]) {
+  for (const [index, [x, z]] of [[-8, 8], [8, 8], [-8, -13], [8, -13], [-14, 0], [15, 0]].entries()) {
     cylinder(0.11, 0.16, 3.1, '#4e6759', x, 1.55, z, 8);
     box(0.62, 0.15, 0.62, '#4c6558', x, 3.45, z);
     box(0.4, 0.6, 0.4, '#f0d69a', x, 3.1, z);
+    if ([0, 2, 5].includes(index)) {
+      const light = new THREE.PointLight('#daa56c', 21, 13, 2); light.position.set(x, 2.9, z); group.add(light);
+    }
     circleCollider(x, z, 0.2);
   }
 
@@ -187,9 +207,29 @@ export function createWorld(scene) {
   box(0.28, 4.1, 0.28, '#907958', -5, 2.05, 16);
   box(0.28, 4.1, 0.28, '#907958', 5, 2.05, 16);
   box(10.5, 0.3, 0.45, '#907958', 0, 4.0, 16);
-  const welcome = textSprite('PAWTOWN', { background: '#537260', color: '#fff2c9', size: 1.25 });
+  const welcome = textSprite('PAWTOWN · ĐÊM XUỐNG', { background: '#1b2832', color: '#b4bec1', size: 1.25 });
   welcome.position.set(0, 3.7, 16); group.add(welcome);
   circleCollider(-5, 16, 0.3); circleCollider(5, 16, 0.3);
+
+  const refugeRings = [];
+  for (const zone of REFUGES) {
+    const ring = mesh(new THREE.RingGeometry(zone.radius - 0.06, zone.radius, 64),
+      new THREE.MeshBasicMaterial({ color: '#86b7ae', transparent: true, opacity: 0.32, depthWrite: false }), zone.x, 0.045, zone.z);
+    ring.rotation.x = -Math.PI / 2; refugeRings.push(ring);
+    for (const side of [-1, 1]) {
+      box(0.13, 2.7, 0.13, '#687174', zone.x + side * 2.4, 1.35, zone.z + 1.8);
+      circleCollider(zone.x + side * 2.4, zone.z + 1.8, 0.15);
+    }
+    box(5.4, 0.16, 3.3, '#47545c', zone.x, 2.75, zone.z + 0.55);
+    const label = textSprite('TRÚ ẨN', { background: '#203b40', color: '#a9c4bc', size: 0.4 });
+    label.position.set(zone.x, 2.4, zone.z + 1.75); group.add(label);
+    const light = new THREE.PointLight('#e2b67e', 25, 9, 2); light.position.set(zone.x, 2.55, zone.z); group.add(light);
+  }
+  const puddleMaterial = new THREE.MeshStandardMaterial({ color: '#263d4b', roughness: 0.13, metalness: 0.4, transparent: true, opacity: 0.55 });
+  for (const [index, [x, z]] of [[-2, 1], [3, 12], [-9, 0], [7, -11], [11, 5], [-4, -14], [-12, -3]].entries()) {
+    const puddle = disc(1, puddleMaterial, x, 0.035, z); puddle.scale.set(1.1 + index % 3 * 0.4, 0.4 + index % 2 * 0.2, 1);
+    puddle.rotation.z = index;
+  }
 
   for (let index = 0; index < 20; index++) {
     const angle = index / 20 * Math.PI * 2;
@@ -208,11 +248,12 @@ export function createWorld(scene) {
   }
 
   return {
-    colliders, buildingFootprints,
+    colliders, buildingFootprints, refuges: REFUGES,
     tick(time, dt) {
       water.material.opacity = 0.84 + Math.sin(time * 0.8) * 0.04;
       topWater.rotation.z = time * 0.05;
       clouds.position.x = Math.sin(time * 0.008) * 12;
+      for (const ring of refugeRings) ring.material.opacity = 0.28 + Math.sin(time * 1.4) * 0.035;
     },
   };
 }

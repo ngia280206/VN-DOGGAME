@@ -2,7 +2,7 @@ import { Pawtown } from './game/engine.mjs';
 import { ROSTER, initialDog, portrait, recall, remember } from './roster.mjs';
 
 const $ = id => document.getElementById(id);
-let game, dogs = [], selected, storage, toastTimer, lastHUD = 0;
+let game, dogs = [], selected, storage, toastTimer, hurtTimer;
 try { storage = window.localStorage; } catch { /* Selection works without storage. */ }
 
 function toast(message) {
@@ -13,9 +13,14 @@ function toast(message) {
 function modeChanged(mode) {
   document.body.dataset.mode = mode;
   $('choose-title').hidden = mode !== 'choose'; $('picker').hidden = mode !== 'choose';
-  $('hud').hidden = mode === 'choose'; $('pause-screen').hidden = mode !== 'paused';
+  $('hud').hidden = mode === 'choose'; $('pause-screen').hidden = !['paused', 'caught'].includes(mode);
   $('joystick').classList.remove('active'); $('stick-knob').style.transform = '';
-  if (mode === 'paused') $('resume').focus();
+  $('pause-title').textContent = mode === 'caught' ? 'Bạn bị dồn vào góc' : 'Ẩn trong bóng tối';
+  $('pause-description').textContent = mode === 'caught'
+    ? 'Thử lại từ mái hiên. Né vòng đỏ trước khi họ ném và giữ đủ sức để chạy.'
+    : 'Quan sát hướng tuần tra trước khi bước tiếp.';
+  $('resume').innerHTML = (mode === 'caught' ? 'Về nơi trú' : 'Tiếp tục') + '<span>↗</span>';
+  if (['paused', 'caught'].includes(mode)) $('resume').focus();
 }
 
 function chooseDog(dog) {
@@ -38,35 +43,51 @@ function drawMap(state, world) {
   const x = value => center + value * scale, z = value => center + value * scale;
   context.clearRect(0, 0, size, size);
   context.save(); context.beginPath(); context.arc(center, center, center - 4, 0, Math.PI * 2); context.clip();
-  context.fillStyle = '#90a47d'; context.fillRect(0, 0, size, size);
-  context.fillStyle = '#dbc9a9'; context.fillRect(x(-6), 0, 12 * scale, size); context.fillRect(0, z(-4), size, 8 * scale);
+  context.fillStyle = '#202c35'; context.fillRect(0, 0, size, size);
+  context.fillStyle = '#414e57'; context.fillRect(x(-6), 0, 12 * scale, size); context.fillRect(0, z(-4), size, 8 * scale);
   context.beginPath(); context.arc(x(0), z(-3), 11 * scale, 0, Math.PI * 2); context.fill();
-  context.fillStyle = '#8eb9b3'; context.beginPath(); context.ellipse(x(-26), z(5), 9 * scale, 12 * scale, 0, 0, Math.PI * 2); context.fill();
-  context.fillStyle = '#719a9f'; context.beginPath(); context.arc(x(0), z(-4), 3.4 * scale, 0, Math.PI * 2); context.fill();
-  context.fillStyle = '#b88c72';
+  context.fillStyle = '#25414d'; context.beginPath(); context.ellipse(x(-26), z(5), 9 * scale, 12 * scale, 0, 0, Math.PI * 2); context.fill();
+  context.fillStyle = '#345361'; context.beginPath(); context.arc(x(0), z(-4), 3.4 * scale, 0, Math.PI * 2); context.fill();
+  context.fillStyle = '#59636b';
   for (const house of world.buildingFootprints) context.fillRect(x(house.x - house.width / 2), z(house.z - house.depth / 2), house.width * scale, house.depth * scale);
   for (const resident of state.residents) {
-    context.fillStyle = resident.greeted ? '#f4d383' : '#f8f1df'; context.beginPath(); context.arc(x(resident.x), z(resident.z), 3, 0, Math.PI * 2); context.fill();
+    if (resident.hostile && resident.awareness > 0.15) {
+      context.fillStyle = resident.state === 'windup' ? '#d37b5550' : '#ba6b5530';
+      const angle = Math.PI / 2 - resident.heading;
+      context.beginPath(); context.moveTo(x(resident.x), z(resident.z));
+      context.arc(x(resident.x), z(resident.z), 8 * scale, angle - 1.05, angle + 1.05); context.closePath(); context.fill();
+    }
+    context.fillStyle = resident.hostile ? '#c8836c' : '#9bacb5';
+    context.beginPath(); context.arc(x(resident.x), z(resident.z), resident.hostile ? 3.5 : 2.7, 0, Math.PI * 2); context.fill();
+  }
+  for (const refuge of world.refuges) {
+    context.strokeStyle = '#86b4ae'; context.lineWidth = 2;
+    context.beginPath(); context.arc(x(refuge.x), z(refuge.z), refuge.radius * scale, 0, Math.PI * 2); context.stroke();
   }
   context.translate(x(state.x), z(state.z)); context.rotate(Math.PI - state.heading);
-  context.fillStyle = '#fff4d1'; context.strokeStyle = '#3e654d'; context.lineWidth = 2;
+  context.fillStyle = '#cbd9dc'; context.strokeStyle = '#62828c'; context.lineWidth = 2;
   context.beginPath(); context.moveTo(0, -8); context.lineTo(-5.5, 5); context.lineTo(0, 2); context.lineTo(5.5, 5); context.closePath(); context.fill(); context.stroke();
   context.restore();
 }
 
 function renderHUD(state, world) {
-  if (performance.now() - lastHUD < 90) return;
-  lastHUD = performance.now();
   $('stamina-fill').style.transform = `scaleX(${state.stamina})`;
   $('stamina-track').setAttribute('aria-valuenow', Math.round(state.stamina * 100));
   $('treat-count').textContent = state.treats;
-  $('quest-count').textContent = `${Math.min(3, state.friends)}/3`;
-  $('quest-title').textContent = state.friends >= 3 ? 'Khu phố đã quen với bạn!' : 'Làm quen với 3 cư dân';
-  document.querySelector('.quest').classList.toggle('complete', state.friends >= 3);
-  $('interact').disabled = !state.near;
-  $('interact-label').textContent = state.near ? `Chào ${state.near}` : 'Chào hỏi';
-  $('near-prompt').hidden = !state.near || state.talking;
-  $('near-label').textContent = state.near ? `Làm quen với ${state.near}` : '';
+  $('quest-count').textContent = `${Math.min(3, state.treats)}/3`;
+  $('quest-title').textContent = state.completed ? 'Đã trở về an toàn' : state.treats >= 3 ? 'Quay về nơi trú' : 'Tìm 3 phần thức ăn';
+  $('quest-hint').textContent = state.completed ? 'Bạn có thể tiếp tục khám phá hoặc nghỉ lại.' : state.treats >= 3 ? 'Tìm vòng đèn xanh trên bản đồ.' : 'Tránh người gác. Giữ sức để chạy.';
+  document.querySelector('.quest').classList.toggle('complete', state.completed);
+  $('health-status').setAttribute('aria-label', `Thể lực ${state.health} trên 3`);
+  for (const [index, pip] of [...$('health-status').querySelectorAll('i')].entries()) pip.classList.toggle('lost', index >= state.health);
+  const safety = state.safe ? 'safe' : state.windup ? 'windup' : state.danger ? 'chase' : state.alert > 0.15 ? 'alert' : 'quiet';
+  document.body.dataset.safety = safety;
+  $('danger-label').textContent = state.safe ? 'TRONG VÙNG TRÚ ẨN' : state.windup ? 'NÉ ĐÒN — RỜI VÒNG ĐỎ' : state.danger ? 'BỊ TRUY ĐUỔI' : state.alert > 0.15 ? 'ĐANG BỊ CHÚ Ý' : 'ẨN MÌNH TRONG ĐÊM';
+  $('awareness-fill').style.transform = `scaleX(${state.safe ? 0 : state.alert})`;
+  $('interact').disabled = !state.near && !state.safe;
+  $('interact-label').textContent = state.safe ? 'Nghỉ' : state.near ? `Nghe ${state.near}` : 'Tương tác';
+  $('near-prompt').hidden = (!state.near && !state.safe) || state.talking;
+  $('near-label').textContent = state.safe ? 'Nghỉ dưới mái hiên' : state.near ? `Nghe ${state.near}` : '';
   if (!state.talking) $('dialogue').hidden = true;
   drawMap(state, world);
 }
@@ -77,7 +98,7 @@ function play() {
 }
 $('start').addEventListener('click', play);
 $('pause').addEventListener('click', () => game?.setMode('paused'));
-$('resume').addEventListener('click', () => { game?.setMode('playing'); $('world').focus({ preventScroll: true }); });
+$('resume').addEventListener('click', () => { if (game?.mode === 'caught') game.restart(); else game?.setMode('playing'); $('world').focus({ preventScroll: true }); });
 $('change-dog').addEventListener('click', () => game?.setMode('choose'));
 $('bark').addEventListener('click', () => game?.bark());
 $('jump').addEventListener('click', () => game?.jump());
@@ -126,9 +147,13 @@ try {
   });
   game = new Pawtown($('world'), {
     mode: modeChanged, frame: renderHUD, toast,
+    damage() {
+      clearTimeout(hurtTimer); $('hit-overlay').classList.add('active');
+      hurtTimer = setTimeout(() => $('hit-overlay').classList.remove('active'), 450);
+    },
     loading(loading) {
       $('start').disabled = loading;
-      $('start-label').textContent = loading ? 'Đang gọi bạn chó…' : 'Vào khu phố';
+      $('start-label').textContent = loading ? 'Đang chuẩn bị…' : 'Bước vào đêm';
       $('picker').classList.toggle('loading', loading);
     },
     error(message) {
