@@ -1,0 +1,11 @@
+*.py text eol=lf
+*.mjs text eol=lf
+*.js text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.glb binary
+# Preserve the supplied third-party license notices verbatim.
+assets/*_LICENSE.txt -whitespace
+public/licenses/*_LICENSE.txt -whitespace

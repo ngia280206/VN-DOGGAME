@@ -1,0 +1,4 @@
+Chihuahua, Corgi, and Dingo models by Gobkit.
+Source: https://gobkit.com/freebies
+License: CC0 1.0 Universal, https://creativecommons.org/publicdomain/zero/1.0/
+Corgi_fixed.glb was converted through Blender to improve compatibility.

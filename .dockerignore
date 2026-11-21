@@ -1,0 +1,10 @@
+**
+!package.json
+!package-lock.json
+!server.mjs
+!scripts/
+!scripts/**
+!web/
+!web/**
+!public/
+!public/**

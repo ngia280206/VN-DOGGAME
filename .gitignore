@@ -1,0 +1,22 @@
+.venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+.pytest_cache/
+*.log
+*.tmp
+artifacts/
+assets/_coat_*.png
+assets/_fur_atlas_*.png
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+.vercel/
+.npm-cache/
+# Original desktop/authoring inputs stay local. Optimized web exports are tracked.
+Textures/
+assets/**/*.glb
+assets/**/*.fbx
+assets/**/*.blend

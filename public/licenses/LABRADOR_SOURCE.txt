@@ -1,0 +1,7 @@
+LABRADOR - Rigged & Animated Game Asset
+
+LICENSE
+-------
+Free to use in personal and commercial projects (games, videos, apps). Credit is appreciated but
+not required. You may not resell or redistribute the asset files themselves, alone or in another
+asset pack.
