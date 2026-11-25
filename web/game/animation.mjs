@@ -1,6 +1,7 @@
 import { damping } from './physics.mjs';
 
 export const GAITS = ['Idle', 'Walk', 'Trot', 'Gallop'];
+export const GESTURES = ['Bark'];
 
 export function gaitWeights(speed, height = 0.7) {
   speed = Math.max(0, speed - 0.025);

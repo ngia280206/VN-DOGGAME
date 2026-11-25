@@ -3,63 +3,74 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#121b25">
-  <meta name="description" content="Sống sót trong đêm: tìm thức ăn, tránh người gác và đưa bạn chó trở về nơi trú.">
-  <title>Pawtown — Sau nửa đêm</title>
+  <meta name="theme-color" content="#202a30">
+  <meta name="description" content="Điều khiển chó H’Mông cộc trong sân 3D ở góc nhìn thứ nhất hoặc thứ ba.">
+  <title>Pawtown · H’Mông cộc</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/style.css">
-  <script type="importmap">{"imports":{"three":"/vendor/three.module.js","three/addons/":"/vendor/addons/"}}</script>
+  <script type="importmap">{"imports":{"three":"/vendor/three.module.min.js","three/addons/":"/vendor/addons/"}}</script>
   <script type="module" src="/main.mjs"></script>
 </head>
-<body data-mode="choose">
-  <canvas id="world" tabindex="0" aria-label="Thế giới game Pawtown. Dùng WASD để di chuyển, Shift để chạy, Space để nhảy, E để chào hỏi."></canvas>
-  <div class="vignette" aria-hidden="true"></div>
+<body data-mode="intro" data-view="first">
+  <canvas id="world" tabindex="0" aria-label="Sân chơi 3D. WASD di chuyển, Space nhảy, V đổi góc nhìn."></canvas>
 
-  <section id="choose-title" class="choose-title" aria-label="Pawtown">
-    <div class="overline"><span class="sun-dot"></span> SAU KHI NHỮNG CỬA TIỆM ĐÃ ĐÓNG</div>
-    <h1>pawtown<span class="paw-logo">✦</span></h1>
-    <p>Không phải ai cũng muốn bạn ở đây.<br>Tìm thức ăn. Giữ khoảng cách. Trở về nơi trú.</p>
-    <span class="world-note">Mưa đêm · Tuần tra NPC · Sinh tồn</span>
-  </section>
+  <header class="topbar">
+    <div class="brand"><img src="/favicon.svg" alt="" width="30" height="30"> Pawtown</div>
+    <a class="credits" href="/licenses/index.html" target="_blank" rel="noopener">Nguồn tài nguyên <span aria-hidden="true">↗</span></a>
+  </header>
 
-  <section id="picker" class="picker" aria-labelledby="picker-heading">
-    <div class="picker-top">
-      <div><p class="eyebrow">MỘT CƠ HỘI ĐỂ VƯỢT QUA ĐÊM NÀY</p><h2 id="picker-heading">Ai sẽ đi qua đêm nay?</h2></div>
-      <span class="roster-count">10 NHÂN VẬT · MỘT ĐÊM DÀI</span>
+  <main id="intro" class="intro">
+    <div class="intro-panel">
+      <p class="intro-label">SÂN TỰ DO</p>
+      <h1>H’Mông <em>cộc</em></h1>
+      <p class="intro-description">Chạy, nhảy và nhìn quanh từ tầm mắt của chó.</p>
+      <button id="start" class="primary" disabled><span id="start-label">Đang tải…</span><span aria-hidden="true">↗</span></button>
     </div>
-    <div id="roster" class="roster" aria-label="Chọn một trong 10 loại chó"></div>
-    <div class="picker-bottom">
-      <div class="selected-copy"><div class="selected-title"><strong id="selected-name">Phú Quốc</strong><span id="selected-tag"></span></div><p id="selected-description">Đang chuẩn bị khu phố…</p></div>
-      <button id="start" class="start-button" disabled><span id="start-label">Đang chuẩn bị…</span><span aria-hidden="true">↗</span></button>
+    <div class="intro-controls desktop-only">
+      <span><kbd>WASD</kbd> Di chuyển</span><span><kbd>Shift</kbd> Chạy</span><span><kbd>Space</kbd> Nhảy</span><span><kbd>V</kbd> Đổi góc nhìn</span>
     </div>
-    <p id="model-error" class="model-error" role="alert" hidden></p>
-  </section>
+  </main>
 
   <div id="hud" class="hud" hidden>
-    <div class="player-card"><div id="player-portrait" class="player-portrait"></div><div><span class="tiny-label">BẠN ĐANG LÀ</span><strong id="player-name">Phú Quốc</strong><span class="player-level">Một mình trong đêm</span></div></div>
-    <div id="health-status" class="health-status" role="img" aria-label="Thể lực 3 trên 3"><span>THỂ LỰC</span><i></i><i></i><i></i></div>
-    <div id="danger-indicator" class="danger-indicator" role="status"><span id="danger-label">DƯỚI MÁI HIÊN</span><div><i id="awareness-fill"></i></div></div>
-    <div class="location"><span class="location-icon">⌂</span><div><span class="tiny-label">PAWTOWN</span><strong>Thị trấn sau nửa đêm</strong></div><span class="weather">☾</span></div>
-    <button id="pause" class="pause-button" aria-label="Tạm dừng game">Ⅱ</button>
-    <div class="quest"><span class="quest-star">✦</span><div><span class="tiny-label">MANG THỨC ĂN VỀ NƠI TRÚ</span><strong id="quest-title">Tìm 3 phần thức ăn</strong><p id="quest-hint">Tránh người gác. Trở về vùng đèn xanh.</p></div><span id="quest-count">0/3</span></div>
-    <div class="map-panel"><canvas id="minimap" width="260" height="260" aria-label="Bản đồ khu phố"></canvas><span>BẢN ĐỒ KHU PHỐ</span></div>
-    <div class="treat-counter"><span aria-hidden="true">✦</span><strong id="treat-count">0</strong><span>thức ăn</span></div>
-    <div class="stamina"><span>NĂNG LƯỢNG</span><div id="stamina-track" role="progressbar" aria-label="Năng lượng chạy" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i id="stamina-fill"></i></div><small><kbd>Shift</kbd> Giữ để chạy</small></div>
-    <div class="keyboard-hints"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Di chuyển</span><span>Kéo chuột để nhìn quanh</span><span><kbd>Esc</kbd> Tạm dừng</span></div>
-    <div class="action-bar"><button id="interact" disabled><kbd>E</kbd><span id="interact-label">Tương tác</span></button><button id="bark"><kbd>B</kbd><span>Sủa</span></button><button id="jump"><kbd>Space</kbd><span>Nhảy</span></button></div>
-    <div id="joystick" class="joystick" aria-label="Cần điều khiển di chuyển"><div id="stick-knob"></div></div>
-    <button id="touch-sprint" class="touch-sprint" aria-label="Giữ để chạy nhanh">Chạy</button>
-    <div id="near-prompt" class="near-prompt" hidden><kbd>E</kbd><span id="near-label"></span></div>
-    <div id="dialogue" class="dialogue" role="status" hidden><span class="dialogue-avatar">···</span><div><strong id="speaker"></strong><p id="speech"></p></div></div>
+    <div class="hud-top">
+      <div class="hud-name"><span aria-hidden="true"></span> H’Mông cộc</div>
+      <div class="hud-actions">
+        <button id="view" aria-label="Chuyển sang góc nhìn thứ ba"><span id="view-label">Góc nhìn thứ nhất</span><kbd class="desktop-only">V</kbd></button>
+        <button id="pause" aria-label="Tạm dừng"><span class="pause-icon" aria-hidden="true"></span></button>
+      </div>
+    </div>
+    <div class="reticle" aria-hidden="true"></div>
+    <div class="hud-bottom">
+      <div class="desktop-only hud-hints"><span id="look-hint">Kéo chuột để nhìn</span><span><kbd>R</kbd> Về điểm đầu</span><span class="third-only"><kbd>B</kbd> Sủa</span></div>
+      <div id="stamina" class="stamina" role="progressbar" aria-label="Sức chạy" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+        <span>SỨC CHẠY</span><div class="stamina-track"><i id="stamina-fill"></i></div>
+      </div>
+    </div>
+    <div class="touch-only touch-controls">
+      <div id="joystick" class="joystick" aria-label="Cần điều khiển di chuyển"><div id="stick-knob"></div></div>
+      <div class="touch-actions">
+        <button id="bark" class="third-only">Sủa</button>
+        <button id="sprint" aria-label="Giữ để chạy">Chạy</button>
+        <button id="jump">Nhảy</button>
+      </div>
+    </div>
   </div>
 
-  <section id="pause-screen" class="pause-screen" role="dialog" aria-modal="true" aria-labelledby="pause-title" hidden>
-    <div class="pause-card"><span class="pause-paw">◈</span><p class="eyebrow">DỪNG LẠI. NGHE TIẾNG CHÂN.</p><h2 id="pause-title">Ẩn trong bóng tối</h2><p id="pause-description">Quan sát hướng tuần tra trước khi bước tiếp.</p><button id="resume" class="start-button">Tiếp tục <span>↗</span></button><button id="change-dog" class="secondary-button">Chọn một bạn chó khác</button><div class="pause-controls"><span><kbd>WASD</kbd> Di chuyển</span><span><kbd>Shift</kbd> Chạy</span><span><kbd>Space</kbd> Nhảy</span><span><kbd>E</kbd> Nghỉ / nói chuyện</span><span><kbd>B</kbd> Sủa</span><span>Kéo chuột để xoay camera</span></div></div>
+  <section id="pause-screen" class="overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title" hidden>
+    <div class="dialog">
+      <h2 id="pause-title">Tạm dừng</h2>
+      <button id="resume" class="primary"><span>Tiếp tục</span><span aria-hidden="true">↗</span></button>
+      <button id="reset" class="secondary">Về điểm đầu</button>
+    </div>
   </section>
-  <div id="hit-overlay" class="hit-overlay" aria-hidden="true"></div>
-  <div id="toast" class="toast" role="status" hidden></div>
-  <section id="fatal" class="fatal" role="alert" hidden><h2>Khu phố chưa sẵn sàng</h2><p id="fatal-message"></p><button onclick="location.reload()">Thử lại</button></section>
-  <a class="credits" href="/licenses/index.html" target="_blank" rel="noopener">Pawtown / Nightfall · Credits</a>
-  <noscript>Bật JavaScript để vào thế giới Pawtown.</noscript>
+
+  <section id="fatal" class="overlay" role="alert" hidden>
+    <div class="dialog">
+      <h2>Chưa thể vào sân</h2>
+      <p id="fatal-message"></p>
+      <button id="reload" class="primary">Tải lại</button>
+    </div>
+  </section>
+  <noscript>Bật JavaScript để vào sân chơi Pawtown.</noscript>
 </body>
 </html>

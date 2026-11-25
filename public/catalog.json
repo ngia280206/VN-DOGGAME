@@ -1,1 +1,24 @@
-{"version": 2, "types": [{"id": "phu_quoc", "name": "Chó Phú Quốc"}, {"id": "hmong_bobtail", "name": "H’Mông cộc đuôi"}, {"id": "bac_ha", "name": "Chó Bắc Hà"}, {"id": "corgi", "name": "Corgi"}, {"id": "pug", "name": "Pug"}, {"id": "chihuahua", "name": "Chihuahua đầu táo"}, {"id": "golden_retriever", "name": "Golden Retriever"}, {"id": "labrador", "name": "Labrador Retriever"}, {"id": "husky", "name": "Siberian Husky"}, {"id": "shiba", "name": "Shiba Inu"}], "dogs": [{"id": "phu_quoc", "name": "Chó Phú Quốc • Bình thường", "typeId": "phu_quoc", "typeName": "Chó Phú Quốc", "variantId": "normal", "variantLabel": "Bình thường", "ageStage": "adult", "height": 1.05, "custom": false, "asset": "/models/phu_quoc.c10fc9a9f429d534.glb", "bytes": 2766320}, {"id": "hmong_bobtail", "name": "H’Mông cộc đuôi • Bình thường", "typeId": "hmong_bobtail", "typeName": "H’Mông cộc đuôi", "variantId": "normal", "variantLabel": "Bình thường", "ageStage": "adult", "height": 0.98, "custom": false, "asset": "/models/hmong_bobtail.3e5d082c436416b5.glb", "bytes": 3872460}, {"id": "corgi", "name": "Corgi • Bình thường", "typeId": "corgi", "typeName": "Corgi", "variantId": "normal", "variantLabel": "Bình thường", "ageStage": "adult", "height": 0.62, "custom": false, "asset": "/models/corgi.855be2843a102967.glb", "bytes": 2749728}, {"id": "shiba", "name": "Shiba Inu • Bình thường", "typeId": "shiba", "typeName": "Shiba Inu", "variantId": "normal", "variantLabel": "Bình thường", "ageStage": "adult", "height": 0.78, "custom": false, "asset": "/models/shiba.e5baf12af6f83f67.glb", "bytes": 3948480}, {"id": "golden_retriever", "name": "Golden Retriever • Bình thường", "typeId": "golden_retriever", "typeName": "Golden Retriever", "variantId": "normal", "variantLabel": "Bình thường", "ageStage": "adult", "height": 1.18, "custom": false, "asset": "/models/golden_retriever.357922a23631d01d.glb", "bytes": 4085304}, {"id": "husky", "name": "Siberian Husky • Bình thường", "typeId": "husky", "typeName": "Siberian Husky", "variantId": "normal", "variantLabel": "Bình thường", "ageStage": "adult", "height": 1.1, "custom": false, "asset": "/models/husky.bde3987b811561ab.glb", "bytes": 4040920}, {"id": "labrador", "name": "Labrador Retriever • Bình thường", "typeId": "labrador", "typeName": "Labrador Retriever", "variantId": "normal", "variantLabel": "Bình thường", "ageStage": "adult", "height": 1.25, "custom": false, "asset": "/models/labrador.747d55acb9144c0c.glb", "bytes": 2832208}, {"id": "pug", "name": "Pug • Bình thường", "typeId": "pug", "typeName": "Pug", "variantId": "normal", "variantLabel": "Bình thường", "ageStage": "adult", "height": 0.57, "custom": false, "asset": "/models/pug.d2658925e108283e.glb", "bytes": 2768876}, {"id": "chihuahua", "name": "Chihuahua đầu táo • Bình thường", "typeId": "chihuahua", "typeName": "Chihuahua đầu táo", "variantId": "normal", "variantLabel": "Bình thường", "ageStage": "adult", "height": 0.43, "custom": false, "asset": "/models/chihuahua.f4639522c6f67b25.glb", "bytes": 2748592}, {"id": "bac_ha", "name": "Chó Bắc Hà • Bình thường", "typeId": "bac_ha", "typeName": "Chó Bắc Hà", "variantId": "normal", "variantLabel": "Bình thường", "ageStage": "adult", "height": 1.1, "custom": false, "asset": "/models/bac_ha.e0e0cf25bf278544.glb", "bytes": 4430840}], "export": {"settings": "web-v1-meshopt-medium-texture1024-quality90", "originalBytes": 249808996, "webBytes": 34243728}}
+{
+  "version": 3,
+  "types": [
+    {
+      "id": "hmong_bobtail",
+      "name": "H’Mông cộc đuôi"
+    }
+  ],
+  "dogs": [
+    {
+      "id": "hmong_bobtail",
+      "name": "H’Mông cộc đuôi • Bình thường",
+      "typeId": "hmong_bobtail",
+      "typeName": "H’Mông cộc đuôi",
+      "variantId": "normal",
+      "variantLabel": "Bình thường",
+      "ageStage": "adult",
+      "height": 0.98,
+      "custom": false,
+      "asset": "/models/hmong_bobtail-play.6e74f46a5d6099dc.glb",
+      "bytes": 1600008
+    }
+  ]
+}
